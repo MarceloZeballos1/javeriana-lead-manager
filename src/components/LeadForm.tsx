@@ -14,20 +14,37 @@ export const LeadForm = ({ program, onSubmit, onCancel }: LeadFormProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Normalización
     const trimmedName = name.trim().toUpperCase();
-    const emailRegex = /^[^\s@]+@javeriana\.edu\.co$/i;
+    const cleanEmail = email.trim().toLowerCase();
+
+    // Regex ultra estricto para el nombre: solo letras (incluye acentos y la eñe) y espacios.
+    // Bloquea números, signos de puntuación, etiquetas <script>, etc.
+    const nameRegex = /^[A-ZÁÉÍÓÚÑÜ\s]+$/i;
+    
+    // Regex ultra estricto para el correo local: 
+    // Obliga a que empiece y termine con alfanuméricos, permitiendo puntos o guiones intermedios,
+    // pero prohibiendo cosas como ".@javeriana..." o múltiples puntos seguidos "..".
+    const emailRegex = /^[a-z0-9]+([._-][a-z0-9]+)*@javeriana\.edu\.co$/i;
 
     if (!trimmedName) {
       setError('El nombre es obligatorio.');
       return;
     }
-    if (!emailRegex.test(email)) {
-      setError('El correo electrónico debe pertenecer al dominio @javeriana.edu.co.');
+    
+    if (!nameRegex.test(trimmedName)) {
+      setError('El nombre solo debe contener letras (no se permiten números ni símbolos).');
+      return;
+    }
+
+    if (!emailRegex.test(cleanEmail)) {
+      setError('El formato del correo es inválido. Intente sin caracteres especiales al inicio de @javeriana.edu.co.');
       return;
     }
 
     setError('');
-    onSubmit(trimmedName, email);
+    onSubmit(trimmedName, cleanEmail);
     setName('');
     setEmail('');
   };
