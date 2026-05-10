@@ -60,6 +60,7 @@ export default function App() {
           <h1 className="text-white text-2xl font-black tracking-tight uppercase">
             Pontificia Universidad Javeriana
           </h1>
+          <img src="/logo-javeriana.png" alt="Logo Universidad Javeriana" className="h-12 object-contain" />
         </div>
       </header>
 
