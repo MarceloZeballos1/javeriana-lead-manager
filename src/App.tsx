@@ -3,12 +3,14 @@ import { getPrograms } from './services/api';
 import type { Program, ProgramCategory } from './types';
 import { Filters } from './components/Filters';
 import { ProgramCard } from './components/ProgramCard';
+import { LeadForm } from './components/LeadForm';
 
 export default function App() {
   const [programs, setPrograms] = useState<Program[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<ProgramCategory | 'Todos'>('Todos');
+  const [selectedProgramForLead, setSelectedProgramForLead] = useState<Program | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -39,7 +41,16 @@ export default function App() {
   }, [programs, searchQuery, selectedCategory]);
 
   const handleSelectProgram = (program: Program) => {
-    console.log(program);
+    setSelectedProgramForLead(program);
+  };
+
+  const handleLeadSubmit = (name: string, email: string) => {
+    console.log('Validación exitosa, datos limpios listos para localStorage:', { name, email, program: selectedProgramForLead });
+    setSelectedProgramForLead(null);
+  };
+
+  const handleLeadCancel = () => {
+    setSelectedProgramForLead(null);
   };
 
   return (
@@ -94,7 +105,11 @@ export default function App() {
             Inscripción a programas académicos
           </p>
           <div className="flex-1 flex flex-col">
-            
+            <LeadForm
+              program={selectedProgramForLead}
+              onSubmit={handleLeadSubmit}
+              onCancel={handleLeadCancel}
+            />
           </div>
         </aside>
       </main>
