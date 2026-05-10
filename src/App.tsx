@@ -1,11 +1,13 @@
 import { useState, useEffect, useMemo } from 'react';
 import { getPrograms } from './services/api';
-import type { Program, ProgramCategory } from './types';
+import type { Program, ProgramCategory, Lead } from './types';
 import { Filters } from './components/Filters';
 import { ProgramCard } from './components/ProgramCard';
 import { LeadForm } from './components/LeadForm';
+import { useLeads } from './context/LeadContext';
 
 export default function App() {
+  const { addLead } = useLeads();
   const [programs, setPrograms] = useState<Program[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -45,8 +47,19 @@ export default function App() {
   };
 
   const handleLeadSubmit = (name: string, email: string) => {
-    console.log('Validación exitosa, datos limpios listos para localStorage:', { name, email, program: selectedProgramForLead });
+    if (!selectedProgramForLead) return;
+
+    const newLead: Lead = {
+      id: crypto.randomUUID(),
+      name,
+      email,
+      programId: selectedProgramForLead.id,
+      date: new Date().toISOString(),
+    };
+
+    addLead(newLead);
     setSelectedProgramForLead(null);
+    alert('Registro guardado exitosamente');
   };
 
   const handleLeadCancel = () => {
