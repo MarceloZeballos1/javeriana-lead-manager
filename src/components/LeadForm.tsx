@@ -36,7 +36,7 @@ export const LeadForm = ({ program, onSubmit, onCancel }: LeadFormProps) => {
     return (
       <div className="flex-1 flex flex-col items-center justify-center text-center p-6 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 h-full min-h-[400px]">
         <p className="text-gray-500 font-medium">
-          Seleccione un programa del catálogo de la izquierda haciendo clic en "Inscríbeme" para iniciar el proceso.
+          Seleccione un programa del catálogo de la izquierda haciendo clic en "Inscribir" para iniciar el proceso.
         </p>
       </div>
     );

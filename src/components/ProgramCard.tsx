@@ -26,7 +26,7 @@ export const ProgramCard = ({ program, onSelect }: ProgramCardProps) => {
         onClick={() => onSelect(program)}
         className="w-full bg-[#fcaa27] hover:bg-[#e59820] text-black font-bold py-2.5 px-4 rounded transition-colors uppercase text-sm"
       >
-        Inscríbeme
+        Inscribir
       </button>
     </div>
   );
