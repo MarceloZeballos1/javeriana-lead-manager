@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { ArrowDownCircle } from 'lucide-react';
 import { getPrograms } from './services/api';
 import type { Program, ProgramCategory, Lead } from './types';
 import { Filters } from './components/Filters';
@@ -80,14 +81,31 @@ export default function App() {
     setSelectedProgramForLead(null);
   };
 
+  const scrollToLeads = () => {
+    document.getElementById('leads-table-section')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col font-sans">
       <header className="bg-[#003366] border-b-4 border-[#FFCC00] py-4 px-6 shadow-md shadow-black/10">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <h1 className="text-white text-2xl font-black tracking-tight uppercase">
-            Pontificia Universidad Javeriana
-          </h1>
-          <img src="/logo-javeriana.png" alt="Logo Universidad Javeriana" className="h-12 object-contain" />
+          <div className="flex items-center gap-4">
+            <img src="/logo-javeriana.png" alt="Logo Universidad Javeriana" className="h-12 object-contain hidden sm:block" />
+            <div className="hidden sm:block w-px h-10 bg-white/30"></div>
+            <div className="flex flex-col">
+              <span className="text-[#FFCC00] text-xs font-bold tracking-widest uppercase">Dirección de Mercadeo</span>
+              <h1 className="text-white text-xl md:text-2xl font-black tracking-tight uppercase leading-none">
+                Gestión de Prospectos
+              </h1>
+            </div>
+          </div>
+          <button
+            onClick={scrollToLeads}
+            className="flex items-center gap-2 bg-[#d88c22] hover:bg-[#e59820] text-black px-4 py-2 rounded text-sm font-bold uppercase transition-colors shadow-sm"
+          >
+            Ver Registros
+            <ArrowDownCircle className="w-5 h-5" />
+          </button>
         </div>
       </header>
 
@@ -167,7 +185,7 @@ export default function App() {
         </aside>
       </main>
 
-      <div className="w-full max-w-7xl mx-auto px-6 pb-12">
+      <div id="leads-table-section" className="w-full max-w-7xl mx-auto px-6 pb-12 pt-4">
         <LeadTable leads={leads} programs={programs} />
       </div>
     </div>
