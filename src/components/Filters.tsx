@@ -41,7 +41,7 @@ export const Filters = ({
                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
             }`}
           >
-            [{cat}]
+            {cat}
           </button>
         ))}
       </div>

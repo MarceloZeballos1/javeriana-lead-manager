@@ -8,7 +8,7 @@ interface PostResponse {
 }
 
 export const getPrograms = async (): Promise<Program[]> => {
-  const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+  const response = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=6');
   
   if (!response.ok) {
     throw new Error('Failed to fetch programs');

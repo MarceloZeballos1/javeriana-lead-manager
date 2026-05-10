@@ -1,4 +1,47 @@
+import { useState, useEffect, useMemo } from 'react';
+import { getPrograms } from './services/api';
+import type { Program, ProgramCategory } from './types';
+import { Filters } from './components/Filters';
+import { ProgramCard } from './components/ProgramCard';
+
 export default function App() {
+  const [programs, setPrograms] = useState<Program[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<ProgramCategory | 'Todos'>('Todos');
+
+  useEffect(() => {
+    let mounted = true;
+    getPrograms()
+      .then((data) => {
+        if (mounted) {
+          setPrograms(data);
+          setIsLoading(false);
+        }
+      })
+      .catch(() => {
+        if (mounted) setIsLoading(false);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const filteredPrograms = useMemo(() => {
+    return programs.filter((program) => {
+      const matchSearch =
+        program.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        program.description.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchCategory =
+        selectedCategory === 'Todos' || program.category === selectedCategory;
+      return matchSearch && matchCategory;
+    });
+  }, [programs, searchQuery, selectedCategory]);
+
+  const handleSelectProgram = (program: Program) => {
+    console.log(program);
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col font-sans">
       <header className="bg-[#003366] border-b-4 border-[#FFCC00] py-4 px-6 shadow-md shadow-black/10">
@@ -18,7 +61,28 @@ export default function App() {
             Programas de pregrado, posgrado y educación continua
           </p>
           <div className="flex-1 flex flex-col">
+            <Filters
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+              selectedCategory={selectedCategory}
+              onCategoryChange={setSelectedCategory}
+            />
             
+            {isLoading ? (
+              <div className="flex-1 flex justify-center items-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#003366]"></div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {filteredPrograms.map((program) => (
+                  <ProgramCard
+                    key={program.id}
+                    program={program}
+                    onSelect={handleSelectProgram}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </section>
 
