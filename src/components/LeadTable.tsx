@@ -10,6 +10,8 @@ interface LeadTableProps {
 
 export const LeadTable = ({ leads, programs, onRemoveLead }: LeadTableProps) => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 5;
 
   const getProgramName = (id: number) => {
     const prog = programs.find((p) => p.id === id);
@@ -37,6 +39,12 @@ export const LeadTable = ({ leads, programs, onRemoveLead }: LeadTableProps) => 
     });
   }, [leads, searchQuery, programs]);
 
+  const totalPages = Math.ceil(filteredLeads.length / ITEMS_PER_PAGE);
+  const paginatedLeads = filteredLeads.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
   if (leads.length === 0) {
     return null;
   }
@@ -58,7 +66,10 @@ export const LeadTable = ({ leads, programs, onRemoveLead }: LeadTableProps) => 
             type="text"
             placeholder="Buscar interesado..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setCurrentPage(1);
+            }}
             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#003366]"
           />
         </div>
@@ -76,7 +87,7 @@ export const LeadTable = ({ leads, programs, onRemoveLead }: LeadTableProps) => 
             </tr>
           </thead>
           <tbody>
-            {filteredLeads.map((lead) => (
+            {paginatedLeads.map((lead) => (
               <tr key={lead.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                 <td className="px-4 py-3 font-semibold text-gray-900">{lead.name}</td>
                 <td className="px-4 py-3 text-gray-600">{lead.email}</td>
@@ -99,6 +110,28 @@ export const LeadTable = ({ leads, programs, onRemoveLead }: LeadTableProps) => 
           </tbody>
         </table>
       </div>
+      
+      {totalPages > 1 && (
+        <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-100">
+          <button
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+            className="px-4 py-2 text-xs font-bold bg-gray-200 text-gray-700 rounded disabled:opacity-50 hover:bg-gray-300 transition-colors uppercase"
+          >
+            Anterior
+          </button>
+          <span className="text-sm font-semibold text-gray-600">
+            Página {currentPage} de {totalPages}
+          </span>
+          <button
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 text-xs font-bold bg-gray-200 text-gray-700 rounded disabled:opacity-50 hover:bg-gray-300 transition-colors uppercase"
+          >
+            Siguiente
+          </button>
+        </div>
+      )}
     </div>
   );
 };

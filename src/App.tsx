@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { ArrowDownCircle } from 'lucide-react';
+import { Toaster, toast } from 'react-hot-toast';
 import { getPrograms } from './services/api';
 import type { Program, ProgramCategory, Lead } from './types';
 import { Filters } from './components/Filters';
@@ -15,6 +16,8 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<ProgramCategory | 'Todos'>('Todos');
   const [selectedProgramForLead, setSelectedProgramForLead] = useState<Program | null>(null);
+  const [leadToRemove, setLeadToRemove] = useState<{ id: string; name: string } | null>(null);
+  const [deleteConfirmText, setDeleteConfirmText] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
 
   const ITEMS_PER_PAGE = 6;
@@ -74,7 +77,15 @@ export default function App() {
 
     addLead(newLead);
     setSelectedProgramForLead(null);
-    alert('Registro guardado exitosamente');
+    toast.success('¡Registro guardado exitosamente!', {
+      duration: 3000,
+      position: 'bottom-right',
+      style: {
+        background: '#003366',
+        color: '#fff',
+        fontWeight: 'bold',
+      },
+    });
   };
 
   const handleLeadCancel = () => {
@@ -82,9 +93,25 @@ export default function App() {
   };
 
   const handleRemoveLead = (id: string, name: string) => {
-    if (window.confirm(`¿Está seguro de eliminar el registro de ${name}?`)) {
-      removeLead(id);
+    setLeadToRemove({ id, name });
+    setDeleteConfirmText('');
+  };
+
+  const confirmRemoveLead = () => {
+    if (leadToRemove && deleteConfirmText.trim() === 'Eliminar') {
+      removeLead(leadToRemove.id);
+      toast.success(`Registro de ${leadToRemove.name} eliminado.`, {
+        duration: 3000,
+        position: 'bottom-right',
+      });
+      setLeadToRemove(null);
+      setDeleteConfirmText('');
     }
+  };
+
+  const cancelRemoveLead = () => {
+    setLeadToRemove(null);
+    setDeleteConfirmText('');
   };
 
   const scrollToLeads = () => {
@@ -194,6 +221,47 @@ export default function App() {
       <div id="leads-table-section" className="w-full max-w-7xl mx-auto px-6 pb-12 pt-4">
         <LeadTable leads={leads} programs={programs} onRemoveLead={handleRemoveLead} />
       </div>
+
+      {leadToRemove && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white p-8 rounded-xl shadow-2xl max-w-md w-full font-sans">
+            <h3 className="text-xl font-bold text-gray-900 mb-2 uppercase">Confirmar eliminación</h3>
+            <p className="text-gray-600 mb-4 text-sm">
+              ¿Está seguro de eliminar el registro de <span className="font-bold text-[#003366]">{leadToRemove.name}</span>? Esta acción no se puede deshacer.
+            </p>
+            <div className="mb-6">
+              <label htmlFor="confirmDelete" className="block text-sm font-bold text-gray-700 mb-2">
+                Escriba <span className="text-red-600">Eliminar</span> para confirmar:
+              </label>
+              <input
+                id="confirmDelete"
+                type="text"
+                value={deleteConfirmText}
+                onChange={(e) => setDeleteConfirmText(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
+                placeholder="Eliminar"
+              />
+            </div>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={cancelRemoveLead}
+                className="px-5 py-2.5 text-sm font-bold text-gray-700 bg-gray-200 hover:bg-gray-300 rounded transition-colors uppercase"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={confirmRemoveLead}
+                disabled={deleteConfirmText.trim() !== 'Eliminar'}
+                className="px-5 py-2.5 text-sm font-bold text-white bg-red-600 hover:bg-red-700 rounded transition-colors uppercase disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <Toaster />
     </div>
   );
 }
