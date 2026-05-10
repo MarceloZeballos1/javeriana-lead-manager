@@ -44,5 +44,11 @@ La solución fue estructurada priorizando la mantenibilidad, el tipado estricto 
 4. Persistencia:
    Las sincronizaciones en la base de datos simulada ocurren sincrónicamente en el almacenamiento de sesión local (`localStorage`), blindando el trabajo contra recargas accidentales.
 
+## Prueba de la aplicación
+
+Al entrar al proyecto por primera vez, la tabla de interesados estará vacía. Para probar todas las funcionalidades es necesario crear registros manualmente: haz clic en "Inscribir" en algún programa y llena los datos recordando usar un correo válido de `@javeriana.edu.co`.
+
+Una vez guardados, los registros aparecerán en la tabla inferior, donde podrás probar el filtro por categoría, la paginación y la alerta de seguridad para eliminar datos.
+
 ## Autor
 Marcelo Santiago Zeballos Murillo
