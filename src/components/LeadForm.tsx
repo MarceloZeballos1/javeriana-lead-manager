@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import type { Program } from '../types';
 
 interface LeadFormProps {
@@ -11,21 +11,23 @@ export const LeadForm = ({ program, onSubmit, onCancel }: LeadFormProps) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
+  
+  const nameInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (program && nameInputRef.current) {
+      nameInputRef.current.focus();
+    }
+  }, [program]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Normalización
     const trimmedName = name.trim().toUpperCase();
     const cleanEmail = email.trim().toLowerCase();
 
-    // Regex ultra estricto para el nombre: solo letras (incluye acentos y la eñe) y espacios.
-    // Bloquea números, signos de puntuación, etiquetas <script>, etc.
     const nameRegex = /^[A-ZÁÉÍÓÚÑÜ\s]+$/i;
     
-    // Regex ultra estricto para el correo local: 
-    // Obliga a que empiece y termine con alfanuméricos, permitiendo puntos o guiones intermedios,
-    // pero prohibiendo cosas como ".@javeriana..." o múltiples puntos seguidos "..".
     const emailRegex = /^[a-z0-9]+([._-][a-z0-9]+)*@javeriana\.edu\.co$/i;
 
     if (!trimmedName) {
@@ -72,6 +74,7 @@ export const LeadForm = ({ program, onSubmit, onCancel }: LeadFormProps) => {
         </label>
         <input
           id="name"
+          ref={nameInputRef}
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
