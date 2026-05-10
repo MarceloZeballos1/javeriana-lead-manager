@@ -4,10 +4,11 @@ import type { Program, ProgramCategory, Lead } from './types';
 import { Filters } from './components/Filters';
 import { ProgramCard } from './components/ProgramCard';
 import { LeadForm } from './components/LeadForm';
+import { LeadTable } from './components/LeadTable';
 import { useLeads } from './context/LeadContext';
 
 export default function App() {
-  const { addLead } = useLeads();
+  const { leads, addLead } = useLeads();
   const [programs, setPrograms] = useState<Program[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -127,6 +128,10 @@ export default function App() {
           </div>
         </aside>
       </main>
+
+      <div className="w-full max-w-7xl mx-auto px-6 pb-12">
+        <LeadTable leads={leads} programs={programs} />
+      </div>
     </div>
   );
 }
