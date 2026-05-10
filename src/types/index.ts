@@ -3,8 +3,8 @@ export type ProgramCategory = 'Pregrado' | 'Posgrado' | 'Ed. Continua';
 export interface Program {
   id: number;
   title: string;
-  category: ProgramCategory;
   description: string;
+  category: ProgramCategory;
 }
 
 export interface Lead {
