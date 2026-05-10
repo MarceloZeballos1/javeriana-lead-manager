@@ -5,6 +5,7 @@ import type { Lead } from '../types';
 interface LeadContextType {
   leads: Lead[];
   addLead: (lead: Lead) => void;
+  removeLead: (id: string) => void;
 }
 
 const LeadContext = createContext<LeadContextType | undefined>(undefined);
@@ -36,8 +37,12 @@ export const LeadProvider = ({ children }: LeadProviderProps) => {
     setLeads((prev) => [...prev, lead]);
   };
 
+  const removeLead = (id: string) => {
+    setLeads((prev) => prev.filter((lead) => lead.id !== id));
+  };
+
   return (
-    <LeadContext.Provider value={{ leads, addLead }}>
+    <LeadContext.Provider value={{ leads, addLead, removeLead }}>
       {children}
     </LeadContext.Provider>
   );

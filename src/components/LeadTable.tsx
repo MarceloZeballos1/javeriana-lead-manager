@@ -1,13 +1,14 @@
 import { useState, useMemo } from 'react';
-import { CheckCircle, Search } from 'lucide-react';
+import { CheckCircle, Search, Trash2 } from 'lucide-react';
 import type { Lead, Program } from '../types';
 
 interface LeadTableProps {
   leads: Lead[];
   programs: Program[];
+  onRemoveLead: (id: string, name: string) => void;
 }
 
-export const LeadTable = ({ leads, programs }: LeadTableProps) => {
+export const LeadTable = ({ leads, programs, onRemoveLead }: LeadTableProps) => {
   const [searchQuery, setSearchQuery] = useState('');
 
   const getProgramName = (id: number) => {
@@ -70,7 +71,8 @@ export const LeadTable = ({ leads, programs }: LeadTableProps) => {
               <th className="px-4 py-3 font-bold">Email</th>
               <th className="px-4 py-3 font-bold">Programa Interés</th>
               <th className="px-4 py-3 font-bold">Fecha Registro</th>
-              <th className="px-4 py-3 font-bold text-center">Estado (Validado)</th>
+              <th className="px-4 py-3 font-bold text-center">Estado</th>
+              <th className="px-4 py-3 font-bold text-center">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -82,6 +84,15 @@ export const LeadTable = ({ leads, programs }: LeadTableProps) => {
                 <td className="px-4 py-3 text-gray-600">{formatDate(lead.date)}</td>
                 <td className="px-4 py-3 flex justify-center">
                   <CheckCircle className="w-5 h-5 text-green-500" />
+                </td>
+                <td className="px-4 py-3 text-center">
+                  <button
+                    onClick={() => onRemoveLead(lead.id, lead.name)}
+                    className="text-gray-400 hover:text-red-500 transition-colors p-1 rounded-full hover:bg-red-50"
+                    title="Eliminar registro"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </button>
                 </td>
               </tr>
             ))}
