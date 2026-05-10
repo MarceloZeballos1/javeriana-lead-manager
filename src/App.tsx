@@ -14,6 +14,13 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<ProgramCategory | 'Todos'>('Todos');
   const [selectedProgramForLead, setSelectedProgramForLead] = useState<Program | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const ITEMS_PER_PAGE = 6;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedCategory]);
 
   useEffect(() => {
     let mounted = true;
@@ -42,6 +49,12 @@ export default function App() {
       return matchSearch && matchCategory;
     });
   }, [programs, searchQuery, selectedCategory]);
+
+  const totalPages = Math.ceil(filteredPrograms.length / ITEMS_PER_PAGE);
+  const paginatedPrograms = filteredPrograms.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
 
   const handleSelectProgram = (program: Program) => {
     setSelectedProgramForLead(program);
@@ -99,14 +112,39 @@ export default function App() {
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#003366]"></div>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {filteredPrograms.map((program) => (
-                  <ProgramCard
-                    key={program.id}
-                    program={program}
-                    onSelect={handleSelectProgram}
-                  />
-                ))}
+              <div className="flex flex-col h-full">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
+                  {paginatedPrograms.map((program) => (
+                    <ProgramCard
+                      key={program.id}
+                      program={program}
+                      onSelect={handleSelectProgram}
+                    />
+                  ))}
+                </div>
+                {totalPages > 1 && (
+                  <div className="flex justify-center items-center gap-4 mt-6 pt-4 border-t border-gray-100">
+                    <button
+                      type="button"
+                      onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                      disabled={currentPage === 1}
+                      className="px-4 py-2 text-sm font-bold bg-gray-200 text-gray-700 rounded disabled:opacity-50 hover:bg-gray-300 transition-colors uppercase"
+                    >
+                      Anterior
+                    </button>
+                    <span className="text-sm font-semibold text-gray-600">
+                      Página {currentPage} de {totalPages}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                      disabled={currentPage === totalPages}
+                      className="px-4 py-2 text-sm font-bold bg-gray-200 text-gray-700 rounded disabled:opacity-50 hover:bg-gray-300 transition-colors uppercase"
+                    >
+                      Siguiente
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>
