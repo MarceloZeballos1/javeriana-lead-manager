@@ -14,7 +14,7 @@ export const Filters = ({
   selectedCategory,
   onCategoryChange,
 }: FiltersProps) => {
-  const categories: Array<ProgramCategory | 'Todos'> = ['Todos', 'Pregrado', 'Posgrado', 'Ed. Continua'];
+  const categories: Array<ProgramCategory | 'Todos'> = ['Todos', 'Pregrado', 'Posgrado', 'Ed. Continua', 'Otros'];
 
   return (
     <div className="flex flex-col gap-4 mb-6">

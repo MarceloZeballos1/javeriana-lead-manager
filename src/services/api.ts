@@ -15,12 +15,12 @@ export const getPrograms = async (): Promise<Program[]> => {
   }
 
   const data: PostResponse[] = await response.json();
-  const categories: ProgramCategory[] = ['Pregrado', 'Posgrado', 'Ed. Continua'];
+  const categories: ProgramCategory[] = ['Pregrado', 'Posgrado', 'Ed. Continua', 'Otros'];
 
   return data.map((post) => ({
     id: post.id,
     title: post.title,
     description: post.body,
-    category: categories[post.id % 3],
+    category: categories[post.id % 4],
   }));
 };

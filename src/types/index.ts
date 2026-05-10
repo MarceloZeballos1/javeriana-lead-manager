@@ -1,4 +1,4 @@
-export type ProgramCategory = 'Pregrado' | 'Posgrado' | 'Ed. Continua';
+export type ProgramCategory = 'Pregrado' | 'Posgrado' | 'Ed. Continua' | 'Otros';
 
 export interface Program {
   id: number;
