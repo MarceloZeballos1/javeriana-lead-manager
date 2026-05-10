@@ -1,5 +1,7 @@
 # Javeriana Lead & Events Manager
 
+**Despliegue de la aplicación:** https://javeriana-lead-manager-theta.vercel.app/
+
 Aplicación Single Page Application (SPA) desarrollada en React (TypeScript) y Vite para la Dirección de Mercadeo de la Pontificia Universidad Javeriana. Diseñada para la publicación de programas académicos y captura de interesados (leads).
 
 ## Instalación y Configuración
